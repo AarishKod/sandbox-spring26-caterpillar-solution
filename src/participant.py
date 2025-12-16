@@ -25,16 +25,18 @@ class ParticipantStats:
             this list contains a participant's stats for a specific language. The two stats are average
             score and average round duration
     """
-    def __init__(self, language: str, average_score: float, average_round_duration: float) -> None:
-        self.__language = language
-        self.__average_score = average_score
-        self.__average_round_duration = average_round_duration
+    def __init__(self, language: str="", average_score: float=0, average_round_duration: float=0) -> None:
+        self.language = language
+        self.average_score = average_score
+        self.average_round_duration = average_round_duration
 
-    def return_list(self) -> List[Any]:
+    @property
+    def as_list(self) -> List[Any]:
         """
         returns a list containing the 3 attributes of the object ParticipantStats
+        [language, average_score, average_round_duration]
         """
-        return [self.__language, self.__average_score, self.__average_round_duration]
+        return [self.language, self.average_score, self.average_round_duration]
 
 
 class Participant:
@@ -43,7 +45,7 @@ class Participant:
 
         id: 
             participant's id
-            type: str
+            type: int
 
         name:
             participant's name
@@ -63,7 +65,7 @@ class Participant:
             average session duration across all sessions
             type: float
     """
-    def __init__(self, identification: str, name: str, languages: List[ParticipantStats], average_round_score: float, average_session_duration: float) -> None:
+    def __init__(self, identification: int, name: str, languages: List[ParticipantStats], average_round_score: float, average_session_duration: float) -> None:
         self.id = identification
         self.name = name
         self.languages = languages
