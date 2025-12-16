@@ -1,4 +1,6 @@
 import requests
+import json
+from typing import Any
 from participant import Participant, ParticipantStats
 
 # url requests are being made from
@@ -13,11 +15,13 @@ if response.status_code == 200:
 else:
     print(f"Error code: {response.status_code}")
 
-def undef() -> list[Participant]:
+def construct_list_of_participants_with_id_name(json_data: Any) -> list[Participant]:
     to_return: list[Participant] = []
-    for participant in data["participantInfo"]:
+    for participant in json_data["participantInfo"]:
         to_return.append(Participant(participant["participantId"], participant["name"], [ParticipantStats()], 0, 0))
     return to_return
 
-for participant in undef():
-    print(participant)
+incomplete_list = construct_list_of_participants_with_id_name(data)
+
+for participant in incomplete_list:
+    print(participant.__json__())

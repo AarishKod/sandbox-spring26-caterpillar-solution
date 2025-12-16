@@ -1,6 +1,6 @@
 """By Aarish Kodnaney"""
 
-from typing import List, Any
+from typing import List, Any, Dict
 
 class ParticipantStats:
     """
@@ -71,3 +71,12 @@ class Participant:
         self.languages = languages
         self.average_round_score = average_round_score
         self.average_session_duration = average_session_duration
+
+    def __json__(self) -> Dict[str, Any]:
+        return {
+            "id": self.id,
+            "name": self.name,
+            "languagues": self.languages,
+            "averageRoundScore": self.average_round_score,
+            "averageSessionDuration": self.average_session_duration
+        }
