@@ -1,3 +1,5 @@
+"""By Aarish Kodnaney"""
+
 from typing import List, Any
 
 class ParticipantStats:
@@ -16,6 +18,12 @@ class ParticipantStats:
         averageRoundDuration:
             type: float
             the average round duration the participant had
+
+    1 method:
+        return_list:
+            returns a list of length 3 with types [str, float, float]
+            this list contains a participant's stats for a specific language. The two stats are average
+            score and average round duration
     """
     def __init__(self, language: str, average_score: float, average_round_duration: float) -> None:
         self.__language = language
