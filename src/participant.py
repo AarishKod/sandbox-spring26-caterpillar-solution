@@ -31,12 +31,16 @@ class ParticipantStats:
         self.average_round_duration = average_round_duration
 
     @property
-    def as_list(self) -> List[Any]:
+    def as_dict(self) -> Dict[str, Any]:
         """
         returns a list containing the 3 attributes of the object ParticipantStats
         [language, average_score, average_round_duration]
         """
-        return [self.language, self.average_score, self.average_round_duration]
+        return {
+            "language": self.language,
+            "averageScore": self.average_score,
+            "averageRoundDuration": self.average_round_duration
+        }
 
 
 class Participant:
@@ -72,11 +76,22 @@ class Participant:
         self.average_round_score = average_round_score
         self.average_session_duration = average_session_duration
 
+    def _generate_languages_list(self) -> List[Dict[str, Any]]:
+        """
+        Generates a list of dicts containing language session info
+        """
+        list_to_return: List[Dict[str, Any]] = []
+        for stat in self.languages:
+            list_to_return.append(stat.as_dict)
+
+        return list_to_return
+
+
     def __json__(self) -> Dict[str, Any]:
         return {
             "id": self.id,
             "name": self.name,
-            "languagues": self.languages,
+            "languages": self._generate_languages_list(),
             "averageRoundScore": self.average_round_score,
             "averageSessionDuration": self.average_session_duration
         }
