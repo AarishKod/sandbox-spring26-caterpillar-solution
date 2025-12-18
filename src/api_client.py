@@ -4,7 +4,7 @@ By Aarish Kodnaney
 this is an api client for fetching data from the endpoint
 """
 
-from typing import Optional, Dict, Any
+from typing import Any
 import requests
 
 class APIClient:
