@@ -37,3 +37,21 @@ jobs:
       with:
         name: output-json
         path: src/output.json
+
+    - name: Run application and capture output
+      run: |
+        cd src
+        python main.py | tee output.log
+    
+    - name: Add output to job summary
+      if: always()
+      run: |
+        echo "## Application Output" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        cat src/output.log >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Generated JSON Preview" >> $GITHUB_STEP_SUMMARY
+        echo '```json' >> $GITHUB_STEP_SUMMARY
+        head -50 src/output.json >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
