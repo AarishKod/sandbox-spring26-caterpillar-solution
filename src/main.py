@@ -4,6 +4,7 @@ import requests
 import json
 from typing import Any, List, Dict
 from participant import Participant, ParticipantStats
+from collections import defaultdict
 
 url: str = "https://recruitment.sandboxnu.com/api/eyJkYXRhIjp7ImNoYWxsZW5nZSI6IkZsb3ciLCJlbWFpbCI6ImtvZG5hbmV5LmFAbm9ydGhlYXN0ZXJuLmVkdSIsImR1ZURhdGUiOiIyMDI1LTEyLTE5VDA1OjAwOjAwLjAwMFoifSwiaGFzaCI6Imw3dFpZMVBYUFhkOEZPTVgzNTgifQ"
 
@@ -15,33 +16,105 @@ if response.status_code == 200:
     data = response.json()
 else:
     print(f"Error code: {response.status_code}")
+    data = None
+
+def generate_participant_statistics(json_data: Any, participant_id_number: int) -> List[ParticipantStats]:
+    """
+    Given a json file and participantId number, it returns a list of all the ParticipantStats objects constructed
+    respective to 
+    """
+
+    def generate_list_of_sessions() -> List[Dict[Any, Any]]:
+        """
+        Generates a list of all sessions for a given participant id number
+        """
+        list_of_participant_sessions: List[Dict[Any, Any]] = []
+        for session in json_data["sessions"]:
+            if session["participantId"] == participant_id_number:
+                list_of_participant_sessions.append(session)
+        return list_of_participant_sessions
+
+    def sort_by_language(sessions: List[Dict[Any, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Takes list of sessions for specific participant id number and organizes them by language. 
+        Output format is something like this:
+        "French": [
+            {
+                "participantId": 0,
+                "sessionId": 0,
+                "language": "French",
+                "rounds": [0],
+                "startTime": 1650328640,
+                "endTime": 1650328740
+
+            },
+            {
+                "participantId": 0,
+                "sessionId": 2,
+                "language": "French",
+                "rounds": [3],
+                "startTime": 1650328640,
+                "endTime": 1650328740
+            },
+        ],
+        "German": [
+            {
+                "participantId": 0,
+                "sessionId": 3,
+                "language": "German",
+                "rounds": [4],
+                "startTime": 1650328640,
+                "endTime": 1650328740
+            },
+        ]
+        """
+        language_sessions = defaultdict(list)
+        for session in sessions:
+            language_sessions[session["language"]].append(session)
+        return dict(language_sessions)
+
+    # we now have a dict of language values with values containing lists of dicts with session info
+    sessions_by_language: Dict[str, List[Dict[str, Any]]] = sort_by_language(generate_list_of_sessions())
+    list_of_participant_stats_objects: List[ParticipantStats] = []
+
+    for session_language in sessions_by_language:
+        language = session_language
+        rounds: List[int] = []
+        round_durations: List[int] = []
+        scores: List[int] = []
+        for session in sessions_by_language[session_language]:
+            rounds += session["rounds"]
+
+        # calculating avg score:
+        for data_fragment_round in json_data["rounds"]:
+            if data_fragment_round["roundId"] in rounds:
+                round_durations.append(data_fragment_round["endTime"] - data_fragment_round["startTime"])
+                scores.append(data_fragment_round["score"])
+
+        avg_score = sum(scores)/len(scores)
+        avg_round_dur = sum(round_durations)/len(round_durations)
+
+        list_of_participant_stats_objects.append(ParticipantStats(language, avg_score, avg_round_dur))
 
 
-def construct_participant_stats(json_data: Any) -> List[Dict[str, Any]]:
-    """"""
-    for data_fragment in json_data["sessions"]:
+    return list_of_participant_stats_objects
+    
+
+
+
+# def build_participant_info_list(json_data: Any) -> List[Dict[str, Any]]:
+#     """
+#     Builds a list with all info from participant info section of dict
+#     """
+#     to_return: List[Dict[str, Any]] = []
+#     for participant in json_data["participantInfo"]:
+#         to_return.append(Participant(participant["participantId"], participant["name"], generate_participant_statistics(json_data, participant["participantId"]), ))
+    
+#     return to_return
+
+if __name__ == "__main__":
+    for value in generate_participant_statistics(data, 15):
+        print(value.as_dict)
 
     
 
-def construct_list_of_participants_with_id_name(json_data: Any) -> list[Participant]:
-    """
-    constructs an incomplete list of participants. All participants will be present, but the dataset
-    only contains the correct id and name
-
-    constructors:
-        json_data:
-            data in json format
-            type: Any
-    """
-    to_return: list[Participant] = []
-    for participant in json_data["participantInfo"]:
-        to_return.append(Participant(participant["participantId"], participant["name"], [], 0, 0))
-
-    return to_return
-
-incomplete_list = construct_list_of_participants_with_id_name(data)
-
-
-
-for participant in incomplete_list:
-    print(participant.__json__())
