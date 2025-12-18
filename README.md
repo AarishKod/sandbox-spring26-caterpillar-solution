@@ -6,7 +6,7 @@ solution for submission for the sandbox spring 2026 application cycle caterpilla
 view on github: (https://github.com/AarishKod/sandbox-spring26-caterpillar-solution)
 
 ## How to run this solution
-this solution is written in python. In this repo/zip file, you can view the output, which is written to output.json by the python script. Alternatively, you can run it locally by navigating to main.py and executing it. Finally, the **best option** is to run the code via Github Actions (I've already set up a YAML file) where you can see the terminal output and json preview. Just head to this: [Github Actions](https://github.com/AarishKod/sandbox-spring26-caterpillar-solution/actions/runs/20351647265). To re-run the code in real time, select the re-run all jobs button located at the top right.
+this solution is written in python. In this repo/zip file, you can view the output, which is written to output.json by the python script. Alternatively, you can run it locally by navigating to main.py and executing it. Finally, the **best option** is to run the code via Github Actions (I've already set up a YAML file) where you can see the terminal output and json preview. Just head to this: [Github Actions](https://github.com/AarishKod/sandbox-spring26-caterpillar-solution/actions/runs/20352449203). To re-run the code in real time, select the re-run all jobs button located at the top right.
 
 ## My thought process / solution design
 when I first read over the challenge, my only thought was "whoa, this is going to be a lot of for loops." After that, however, I went and got a grasp of the app by drawing out how things interact with each other, and then started planning out what files and classes I would need via a kinda-sorta UML-diagram ish drawing.
