@@ -10,14 +10,15 @@ from stats import StatisticsCalculator
 
 url: str = "https://recruitment.sandboxnu.com/api/eyJkYXRhIjp7ImNoYWxsZW5nZSI6IkZsb3ciLCJlbWFpbCI6ImtvZG5hbmV5LmFAbm9ydGhlYXN0ZXJuLmVkdSIsImR1ZURhdGUiOiIyMDI1LTEyLTE5VDA1OjAwOjAwLjAwMFoifSwiaGFzaCI6Imw3dFpZMVBYUFhkOEZPTVgzNTgifQ"
 
-# getting data from api
-cl = APIClient(url)
-data = cl.get_data()
 
 def main() -> None:
     """
     main function
     """
+    # getting data from api
+    cl = APIClient(url)
+    data = cl.get_data()
+
     list_of_participant_objects = StatisticsCalculator.build_participant_info_list(data)
     final_response = []
     for participant_object in list_of_participant_objects:
