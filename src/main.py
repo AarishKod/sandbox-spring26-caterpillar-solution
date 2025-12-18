@@ -85,36 +85,58 @@ def generate_participant_statistics(json_data: Any, participant_id_number: int) 
         for session in sessions_by_language[session_language]:
             rounds += session["rounds"]
 
-        # calculating avg score:
+        # accumulating scores and times
         for data_fragment_round in json_data["rounds"]:
             if data_fragment_round["roundId"] in rounds:
                 round_durations.append(data_fragment_round["endTime"] - data_fragment_round["startTime"])
                 scores.append(data_fragment_round["score"])
 
-        avg_score = sum(scores)/len(scores)
-        avg_round_dur = sum(round_durations)/len(round_durations)
+        # calculating average score and average round duration
+        avg_score: float = round(sum(scores)/len(scores), 2)
+        avg_round_dur: float = round(sum(round_durations)/len(round_durations), 2)
 
         list_of_participant_stats_objects.append(ParticipantStats(language, avg_score, avg_round_dur))
 
 
     return list_of_participant_stats_objects
     
-
-
-
-# def build_participant_info_list(json_data: Any) -> List[Dict[str, Any]]:
-#     """
-#     Builds a list with all info from participant info section of dict
-#     """
-#     to_return: List[Dict[str, Any]] = []
-#     for participant in json_data["participantInfo"]:
-#         to_return.append(Participant(participant["participantId"], participant["name"], generate_participant_statistics(json_data, participant["participantId"]), ))
+def calculate_average_round_score(participant_statistics: List[ParticipantStats]) -> float:
+    sum_of_scores: float = 0
+    for statistic in participant_statistics:
+        sum_of_scores += statistic.average_score
     
-#     return to_return
+    if len(participant_statistics) is not 0:
+        return round(sum_of_scores / len(participant_statistics), 2)
+    return 0
+
+def calculate_average_session_duration(participant_statistics: List[ParticipantStats]) -> float:
+    sum_of_durations: float = 0
+    for statistic in participant_statistics:
+        sum_of_durations += statistic.average_round_duration
+    
+    if len(participant_statistics) is not 0:
+        return round(sum_of_durations / len(participant_statistics), 2)
+    return 0
+
+def build_participant_info_list(json_data: Any) -> List[Participant]:
+    """
+    Builds a list with all info from participant info section of dict
+    """
+    to_return: List[Participant] = []
+    for participant in json_data["participantInfo"]:
+        participant_stats = generate_participant_statistics(json_data, participant["participantId"])
+        to_return.append(Participant(participant["participantId"], participant["name"], participant_stats, calculate_average_round_score(participant_stats), calculate_average_session_duration(participant_stats)))
+    return to_return
 
 if __name__ == "__main__":
-    for value in generate_participant_statistics(data, 15):
-        print(value.as_dict)
+    lt = build_participant_info_list(data)
+
+    final_response = []
+    for value in lt:
+        final_response.append(value.__json__())
+
+    with open('output.json', 'w') as f:
+        json.dump(final_response, f, indent=2)
 
     
 
