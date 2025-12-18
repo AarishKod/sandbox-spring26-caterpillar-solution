@@ -25,10 +25,11 @@ class ParticipantStats:
             this list contains a participant's stats for a specific language. The two stats are average
             score and average round duration
     """
-    def __init__(self, language: str, average_score: float, average_round_duration: float) -> None:
+    def __init__(self, language: str, average_score: float, average_round_duration: float, total_score: float) -> None:
         self.language = language
         self.average_score = average_score
         self.average_round_duration = average_round_duration
+        self.total_score: float = total_score
 
     @property
     def as_dict(self) -> Dict[str, Any]:
@@ -41,7 +42,8 @@ class ParticipantStats:
         return {
             "language": self.language,
             "averageScore": self.average_score,
-            "averageRoundDuration": self.average_round_duration
+            "averageRoundDuration": self.average_round_duration,
+            # "for debugging (total score)": self.total_score
         }
 
 

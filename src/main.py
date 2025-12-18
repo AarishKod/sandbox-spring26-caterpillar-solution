@@ -1,10 +1,10 @@
 """By Aarish Kodnaney"""
 
-import requests
 import json
 from typing import Any, List, Dict
-from participant import Participant, ParticipantStats
 from collections import defaultdict
+import requests
+from participant import Participant, ParticipantStats
 
 url: str = "https://recruitment.sandboxnu.com/api/eyJkYXRhIjp7ImNoYWxsZW5nZSI6IkZsb3ciLCJlbWFpbCI6ImtvZG5hbmV5LmFAbm9ydGhlYXN0ZXJuLmVkdSIsImR1ZURhdGUiOiIyMDI1LTEyLTE5VDA1OjAwOjAwLjAwMFoifSwiaGFzaCI6Imw3dFpZMVBYUFhkOEZPTVgzNTgifQ"
 
@@ -92,31 +92,33 @@ def generate_participant_statistics(json_data: Any, participant_id_number: int) 
                 scores.append(data_fragment_round["score"])
 
         # calculating average score and average round duration
-        avg_score: float = round(sum(scores)/len(scores), 2)
-        avg_round_dur: float = round(sum(round_durations)/len(round_durations), 2)
+        avg_score: float = round(sum(scores) / len(scores), 2)
+        avg_round_dur: float = round(sum(round_durations) / len(round_durations), 2)
 
-        list_of_participant_stats_objects.append(ParticipantStats(language, avg_score, avg_round_dur))
+        list_of_participant_stats_objects.append(ParticipantStats(language, avg_score, avg_round_dur, sum(scores)))
 
+    # sorting list by score in ascending order prior to return
+    to_return = sorted(list_of_participant_stats_objects, key=lambda x: x.total_score, reverse=True)
 
-    return list_of_participant_stats_objects
+    return to_return
     
-def calculate_average_round_score(participant_statistics: List[ParticipantStats]) -> float:
+def calculate_average_round_score(participant_statistics: List[ParticipantStats]) -> float | str:
     sum_of_scores: float = 0
     for statistic in participant_statistics:
         sum_of_scores += statistic.average_score
     
-    if len(participant_statistics) is not 0:
+    if len(participant_statistics) != 0:
         return round(sum_of_scores / len(participant_statistics), 2)
-    return 0
+    return "N/A"
 
-def calculate_average_session_duration(participant_statistics: List[ParticipantStats]) -> float:
+def calculate_average_session_duration(participant_statistics: List[ParticipantStats]) -> float | str:
     sum_of_durations: float = 0
     for statistic in participant_statistics:
         sum_of_durations += statistic.average_round_duration
     
-    if len(participant_statistics) is not 0:
+    if len(participant_statistics) != 0:
         return round(sum_of_durations / len(participant_statistics), 2)
-    return 0
+    return "N/A"
 
 def build_participant_info_list(json_data: Any) -> List[Participant]:
     """
@@ -129,14 +131,16 @@ def build_participant_info_list(json_data: Any) -> List[Participant]:
     return to_return
 
 if __name__ == "__main__":
-    lt = build_participant_info_list(data)
+    list_of_participant_objects = build_participant_info_list(data)
 
     final_response = []
-    for value in lt:
-        final_response.append(value.__json__())
+    for participant_object in list_of_participant_objects:
+        final_response.append(participant_object.__json__())
+
+    sorted_alphabetically_final_response = sorted(final_response, key=lambda x: x["name"])
 
     with open('output.json', 'w') as f:
-        json.dump(final_response, f, indent=2)
+        json.dump(sorted_alphabetically_final_response, f, indent=2)
 
     
 
