@@ -14,7 +14,7 @@ class StatisticsCalculator():
     @staticmethod
     def calculate_average_round_score(json_data: Any, list_of_rounds: List[int]) -> float | str:
         """
-        calculates average round score
+        legit just calculates average round score
 
         args:
             json_data:
@@ -205,7 +205,7 @@ class StatisticsCalculator():
     @staticmethod
     def build_participant_info_list(json_data: Any) -> List[Participant]:
         """
-        Builds a list with all info from participant info section of dict
+        builds a list with all info from participant info section of dict
 
         args:
             json_data:
