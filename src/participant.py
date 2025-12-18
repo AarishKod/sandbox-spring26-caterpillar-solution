@@ -1,4 +1,8 @@
-"""By Aarish Kodnaney"""
+"""
+By Aarish Kodnaney
+
+building the participant and participant related objects
+"""
 
 from typing import List, Any, Dict
 
@@ -73,7 +77,7 @@ class Participant:
             average session duration across all sessions
             type: float
     """
-    def __init__(self, identification: int, name: str, languages: List[ParticipantStats], average_round_score: float, average_session_duration: float) -> None:
+    def __init__(self, identification: int, name: str, languages: List[ParticipantStats], average_round_score: float | str, average_session_duration: float | str) -> None:
         self.id = identification
         self.name = name
         self.languages = languages
