@@ -38,6 +38,10 @@ class APIClient:
         args:
             api_url: str -> the actual endpoint
             payload: Any -> what we're posting to the api
+
+        returns:
+            nothing
+            refer to print statements below for notifiers
         """
         try:
             response = requests.post(api_url, json=payload, timeout=20)

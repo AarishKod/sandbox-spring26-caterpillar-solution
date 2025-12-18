@@ -53,8 +53,9 @@ class ParticipantStats:
 
 class Participant:
     """
-    Represents a participant. Has several attributes:
+    represents a participant
 
+    5 attributes:
         id: 
             participant's id
             type: int
@@ -76,6 +77,30 @@ class Participant:
         averageSessionDuration:
             average session duration across all sessions
             type: float
+
+    2 methods:
+        (helper) _generate_languages_list:
+            turns ParticipantStats objects into json friendly dicts
+
+            args:
+                None
+
+            returns:
+                legit a dict of problem-mandated ParticipantStats objects
+                type: List[Dict[str, Any]]
+
+        __json__:
+            builds a json file based of Participant objects
+
+            args:
+                None
+
+            returns:
+                "id": self.id,
+                "name": self.name,
+                "languages": self._generate_languages_list(),
+                "averageRoundScore": self.average_round_score,
+                "averageSessionDuration": self.average_session_duration
     """
     def __init__(self, identification: int, name: str, languages: List[ParticipantStats], average_round_score: float | str, average_session_duration: float | str) -> None:
         self.id = identification
